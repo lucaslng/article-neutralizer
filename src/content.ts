@@ -1,39 +1,59 @@
-function extractTitle() {
-  const selectors = ["h1", '[class*="title"]', '[class*="headline"]'];
-  for (const sel of selectors) {
-    const el = document.querySelector(sel);
-    if (el?.textContent?.trim()) return el.textContent.trim();
-  }
-  return document.title;
-}
+import { Readability } from '@mozilla/readability';
 
 function scrapeNewsArticle() {
-  const title = extractTitle();
+  try {
+    const documentClone = document.cloneNode(true) as Document;
+    const article = new Readability(documentClone).parse();
 
-  const container =
-    document.querySelector(
-      'article, [class*="article-body"], [class*="post-content"], main'
-    ) || document.body;
+    if (!article) {
+      return null;
+    }
+    
+    return {
+      url: window.location.href,
+      title: article.title,
+      textContent: article.textContent,
+      scrapedAt: new Date().toISOString(),
+      domain: window.location.hostname,
+    };
 
-  const paragraphs = Array.from(container.querySelectorAll("p"))
-    .map((p) => p.textContent.trim())
-    .filter(Boolean);
-
-  return {
-    url: window.location.href,
-    title,
-    paragraphs,
-    scrapedAt: new Date().toISOString(),
-    domain: window.location.hostname,
-  };
+  } catch (error) {
+    console.error('Readability parsing failed:', error);
+  }
 }
+
+// function scrapeNewsArticle() {
+//   const title = extractTitle();
+
+//   const container =
+//     document.querySelector(
+//       'article, [class*="article-body"], [class*="post-content"], main'
+//     ) || document.body;
+
+//   const paragraphs = Array.from(container.querySelectorAll("p"))
+//     .map((p) => p.textContent.trim())
+//     .filter(Boolean);
+
+//   return {
+//     url: window.location.href,
+//     title,
+//     paragraphs,
+//     scrapedAt: new Date().toISOString(),
+//     domain: window.location.hostname,
+//   };
+// }
 
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   if (request.action === "extractArticle") {
     const article = scrapeNewsArticle();
-    sendResponse({
+
+    if (!article) {
+      sendResponse(null);
+    } else {
+      sendResponse({
       ...article,
-      text: article.paragraphs.join("\n\n"),
-    });
+      text: article.textContent,
+      });
+    }
   }
 });

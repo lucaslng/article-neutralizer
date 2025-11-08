@@ -5,6 +5,7 @@ export default function Neutralize() {
 
   async function getArticle() {
     setArticle("Extracting article...");
+
     const [tab] = await chrome.tabs.query({
       active: true,
       currentWindow: true,
@@ -33,6 +34,7 @@ export default function Neutralize() {
       await extract();
     } catch (error) {
       console.warn("Content script missing, injecting...", error);
+
       try {
         await chrome.scripting.executeScript({
           target: { tabId: tab.id! },
