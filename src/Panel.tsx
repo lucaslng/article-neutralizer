@@ -8,9 +8,9 @@ import Settings from "./pages/Settings";
 function Panel() {
 	const [pageId, setPageId] = useState(0);
 
-  return (
-		<div>
-			<div className="bg-slate-950 p-4 top-0 h-dvh">
+	return (
+		<div className="min-h-screen bg-slate-950">
+			<div className="p-4 pb-32">
 				{pageId === 0 && <Neutralize />}
 				{pageId === 1 && <Saved />}
 				{pageId === 2 && <Settings />}
