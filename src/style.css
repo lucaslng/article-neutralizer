@@ -1,0 +1,11 @@
+@import "tailwindcss";
+@import '@fontsource/inter';
+
+* {
+	@apply text-white;
+	font-family: 'Inter', sans-serif;
+}
+
+h1 {
+	@apply text-4xl;
+}

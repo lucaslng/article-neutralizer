@@ -1,0 +1,27 @@
+{
+  "name": "News Article Scraper",
+  "description": "Scrape content from news articles",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": ["sidePanel", "activeTab", "scripting", "tabs", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "24": "icons/icon24.png",
+      "32": "icons/icon32.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "src/panel.html"
+  }
+}
