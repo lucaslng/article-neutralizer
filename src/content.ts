@@ -22,6 +22,9 @@ function scrapeNewsArticle() {
   }
 }
 
+/*
+ORIGINAL DHILOSHAN
+*/
 // function scrapeNewsArticle() {
 //   const title = extractTitle();
 

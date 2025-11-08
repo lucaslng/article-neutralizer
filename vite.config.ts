@@ -5,10 +5,10 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import { resolve } from 'path';
 
 export default defineConfig({
-plugins: [
-  react(),
-  tailwindcss(),
-  viteStaticCopy({
+  plugins: [
+    react(),
+    tailwindcss(),
+    viteStaticCopy({
       targets: [
         {
           src: 'manifest.json',
@@ -16,13 +16,13 @@ plugins: [
         }
       ],
     }),
-],
+  ],
   build: {
     rollupOptions: {
       input: {
         sidePanel: resolve(__dirname, 'src/panel.html'),
-        background: resolve(__dirname, 'src/background.js'),
-        content: resolve(__dirname, 'src/content.js'),
+        background: resolve(__dirname, 'src/background.ts'),
+        content: resolve(__dirname, 'src/content.ts'),
       },
       output: {
         entryFileNames: '[name].js',
@@ -30,6 +30,6 @@ plugins: [
         assetFileNames: '[name].[ext]',
       },
     },
-  outDir: 'dist',
+    outDir: 'dist',
   },
 });
