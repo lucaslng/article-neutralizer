@@ -18,77 +18,90 @@ export default function Saved() {
   }, []);
 
   async function loadArticles() {
-    const saved = await storage.getSavedArticles();
-    setArticles(saved);
+    try {
+      const saved = await storage.getSavedArticles();
+      console.log("Loaded articles:", saved);
+      setArticles(saved);
+    } catch (error) {
+      console.error("Failed to load articles:", error);
+    }
   }
 
   async function handleDelete(index: number) {
-    await storage.deleteArticle(index);
-    if (selectedIndex === index) {
-      setSelectedIndex(null);
+    try {
+      await storage.deleteArticle(index);
+      if (selectedIndex === index) {
+        setSelectedIndex(null);
+        setSelectedVersionIndex(0);
+      }
+    } catch (error) {
+      console.error("Failed to delete article:", error);
     }
   }
 
   function formatDate(dateString?: string) {
     if (!dateString) return "Unknown date";
-    return new Date(dateString).toLocaleString();
-  }
-
-  function getProcessingTypeLabel(type: ProcessingType): string {
-    switch (type) {
-      case 'original':
-        return 'Original';
-      case 'neutralized':
-        return 'Neutralized';
-      case 'factchecked':
-        return 'Fact Checked';
-      default:
-        return 'Unknown';
+    try {
+      return new Date(dateString).toLocaleString();
+    } catch {
+      return "Invalid date";
     }
   }
 
+  function getProcessingTypeLabel(type: ProcessingType): string {
+    const labels = {
+      'original': 'Original',
+      'neutralized': 'Neutralized',
+      'factchecked': 'Fact Checked'
+    };
+    return labels[type] || 'Unknown';
+  }
+
   const selectedArticle = selectedIndex !== null ? articles[selectedIndex] : null;
-  const selectedVersion = selectedArticle?.versions[selectedVersionIndex];
+  const selectedVersion = selectedArticle && selectedArticle.versions.length > selectedVersionIndex 
+    ? selectedArticle.versions[selectedVersionIndex] 
+    : null;
 
   return (
-    <div>
+    <div className="w-full">
       <div className="flex flex-row justify-between items-center mb-4">
         <h1>Saved Articles</h1>
       </div>
 
       {articles.length === 0 ? (
-        <p className="mt-4 text-ctp-subtext0">No saved articles yet.</p>
+        <p className="mt-4 text-gray-400">No saved articles yet.</p>
       ) : selectedArticle ? (
         <div>
           <button
-            onClick={() => setSelectedIndex(null)}
-            className="cursor-pointer text-ctp-subtext0 text-sm hover:text-ctp-text mb-4 transition-colors"
+            onClick={() => {
+              setSelectedIndex(null);
+              setSelectedVersionIndex(0);
+            }}
+            className="text-sm text-blue-400 hover:text-blue-300 mb-4 cursor-pointer"
           >
             ← Back to list
           </button>
 
-          <div className="bg-ctp-base p-4 rounded-lg mb-4">
+          <div className="bg-slate-800 p-4 rounded-lg mb-4">
             <h2 className="text-xl font-bold mb-2">{selectedArticle.title}</h2>
             <a
               href={selectedArticle.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="cursor-pointer text-sm text-ctp-blue break-all"
+              className="text-sm text-blue-400 hover:text-blue-300 break-all"
             >
               {selectedArticle.url}
             </a>
-            <p className="text-sm text-ctp-subtext1 mt-2">
-              {selectedArticle.domain}
-            </p>
-            <p className="text-xs text-ctp-subtext1 mt-1">
+            <p className="text-sm text-gray-400 mt-2">{selectedArticle.domain}</p>
+            <p className="text-xs text-gray-500 mt-1">
               Saved: {formatDate(selectedArticle.savedAt)}
             </p>
           </div>
 
-          {selectedArticle.versions.length > 0 && (
+          {selectedArticle.versions && selectedArticle.versions.length > 0 ? (
             <>
               {selectedArticle.versions.length > 1 && (
-                <div className="flex gap-2 mb-4">
+                <div className="flex gap-2 mb-4 flex-wrap">
                   {selectedArticle.versions.map((version, index) => (
                     <button
                       key={index}
@@ -105,27 +118,31 @@ export default function Saved() {
                 </div>
               )}
 
-              <div className="bg-slate-800 p-4 rounded-lg mb-4">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-lg font-semibold">
-                    {getProcessingTypeLabel(selectedVersion?.type || 'original')}
-                  </h3>
-                  <p className="text-xs text-gray-500">
-                    {formatDate(selectedVersion?.processedAt)}
+              {selectedVersion && (
+                <div className="bg-slate-800 p-4 rounded-lg mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="text-lg font-semibold">
+                      {getProcessingTypeLabel(selectedVersion.type)}
+                    </h3>
+                    <p className="text-xs text-gray-500">
+                      {formatDate(selectedVersion.processedAt)}
+                    </p>
+                  </div>
+                  <p className="whitespace-pre-wrap">
+                    {selectedVersion.content || 'No content available'}
                   </p>
                 </div>
-                <p className="whitespace-pre-wrap">
-                  {selectedVersion?.content || 'No content available'}
-                </p>
-              </div>
+              )}
             </>
+          ) : (
+            <div className="bg-slate-800 p-4 rounded-lg mb-4">
+              <p className="text-gray-400">No versions available for this article.</p>
+            </div>
           )}
 
           <button
-            onClick={() =>
-              selectedIndex !== null && handleDelete(selectedIndex)
-            }
-            className="w-full border border-ctp-red text-ctp-red px-4 py-2 rounded hover:bg-ctp-red hover:text-ctp-text transition-colors"
+            onClick={() => selectedIndex !== null && handleDelete(selectedIndex)}
+            className="w-full border border-red-500 text-red-500 px-4 py-2 rounded hover:bg-red-500 hover:text-white transition-colors"
           >
             Delete Article
           </button>
@@ -134,20 +151,21 @@ export default function Saved() {
         <ul className="mt-4 space-y-4 list-none p-0">
           {articles.map((article, index) => (
             <li
-              key={index}
-              className="bg-ctp-base p-4 rounded cursor-pointer hover:bg-ctp-surface0 transition-colors"
-              onClick={() => setSelectedIndex(index)}
+              key={article.id || index}
+              className="bg-slate-800 p-4 rounded cursor-pointer hover:bg-slate-700 transition-colors"
+              onClick={() => {
+                setSelectedIndex(index);
+                setSelectedVersionIndex(0);
+              }}
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <h2 className="text-xl font-bold">{article.title}</h2>
-                  <p className="text-sm text-ctp-subtext1 mt-1">
-                    {article.domain}
-                  </p>
-                  <p className="text-xs text-ctp-subtext1 mt-1">
+                  <p className="text-sm text-gray-400 mt-1">{article.domain}</p>
+                  <p className="text-xs text-gray-500 mt-1">
                     {formatDate(article.savedAt)}
                   </p>
-                  {article.versions.length > 0 && (
+                  {article.versions && article.versions.length > 0 && (
                     <p className="text-xs text-gray-400 mt-1">
                       {article.versions.length} version{article.versions.length > 1 ? 's' : ''}
                     </p>
@@ -158,7 +176,7 @@ export default function Saved() {
                     e.stopPropagation();
                     handleDelete(index);
                   }}
-                  className="cursor-pointer text-ctp-red text-sm px-2 flex items-center gap-1"
+                  className="text-red-400 hover:text-red-300 text-sm px-2 flex items-center gap-1"
                 >
                   <DeleteIcon fontSize="small" />
                   Delete

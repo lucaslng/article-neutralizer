@@ -25,6 +25,18 @@ export const storage = {
     });
   },
 
+  updateArticleVersions: async (url: string, versions: any[]): Promise<void> => {
+    const articles = await storage.getSavedArticles();
+    const articleIndex = articles.findIndex(a => a.url === url);
+    
+    if (articleIndex === -1) {
+      throw new Error('Article not found');
+    }
+    
+    articles[articleIndex].versions = versions;
+    await chrome.storage.local.set({ savedArticles: articles });
+  },
+
   deleteArticle: async (index: number): Promise<void> => {
     const articles = await storage.getSavedArticles();
     articles.splice(index, 1);
