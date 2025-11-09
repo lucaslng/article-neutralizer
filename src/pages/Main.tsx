@@ -1,9 +1,20 @@
 import { useState } from "react";
 import { neutralizeText, factCheckText } from "../backend/gemini";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+
+interface ArticleData {
+  url: string;
+  title: string;
+  text: string;
+  textContent: string;
+  scrapedAt: string;
+  domain: string;
+}
 
 export default function Neutralize() {
   const [article, setArticle] = useState("Extracted text will appear here");
   const [extractedText, setExtractedText] = useState("");
+  const [articleData, setArticleData] = useState<ArticleData | null>(null);
 
   async function sendExtractRequest(tabId: number) {
     return new Promise<any>((resolve, reject) => {
@@ -31,6 +42,7 @@ export default function Neutralize() {
       const response = await sendExtractRequest(tab.id!);
       const extracted = response?.text || "No readable content found.";
       setExtractedText(extracted);
+      setArticleData(response);
       setArticle("Extraction complete");
     } catch (error) {
       console.warn("Content script missing, injecting...", error);
@@ -43,6 +55,7 @@ export default function Neutralize() {
         const response = await sendExtractRequest(tab.id!);
         const extracted = response?.text || "No readable content found.";
         setExtractedText(extracted);
+        setArticleData(response);
         setArticle("Extraction complete");
       } catch (injectError) {
         console.error("Extraction failed:", injectError);
@@ -85,30 +98,59 @@ export default function Neutralize() {
     }
   }
 
+  function saveArticle() {
+    if (!articleData) {
+      console.warn("No article data to save.");
+      return;
+    }
+
+    chrome.storage.local.get(["savedArticles"], (result) => {
+      const prev: ArticleData[] = result.savedArticles || [];
+      
+      const articleToSave = {
+        ...articleData,
+        processedText: article,
+        savedAt: new Date().toISOString(),
+      };
+      
+      const updated = [...prev, articleToSave];
+
+      chrome.storage.local.set({ savedArticles: updated }, () => {
+        console.log("Article saved.");
+        setArticle("Article saved successfully!");
+      });
+    });
+  }
+
   return (
     <div>
-      <h1>Article Neutralizer</h1>
-      
-      <button
-        className="border rounded-sm border-white p-1"
-        onClick={() => getArticle()}
-      >
-        Extract
-      </button>
+      <div className="flex flex-row mb-2.5">
+        <h1 className="mr-3">Article Neutralizer</h1>
+        <BookmarkIcon fontSize="large" onClick={saveArticle} />
+      </div>
 
-      <button
-        className="border rounded-sm border-white p-1"
-        onClick={() => neutralize()}
-      >
-        Neutralize
-      </button>
+      <div className="flex gap-2 mb-3.5">
+        <button
+          className="border rounded-sm border-white p-1"
+          onClick={getArticle}
+        >
+          Extract
+        </button>
 
-      <button
-        className="border rounded-sm border-white p-1"
-        onClick={() => factCheck()}
-      >
-        Fact Check
-      </button>
+        <button
+          className="border rounded-sm border-white p-1"
+          onClick={neutralize}
+        >
+          Neutralize
+        </button>
+
+        <button
+          className="border rounded-sm border-white p-1"
+          onClick={factCheck}
+        >
+          Fact Check
+        </button>
+      </div>
 
       <div className="mt-4 bg-slate-800 p-4 rounded">
         <p className="whitespace-pre-wrap">{article}</p>
