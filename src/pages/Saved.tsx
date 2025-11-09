@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { storage } from "../utils/storage";
-import type { SavedArticle } from "../utils/article";
+import type { SavedArticle, ProcessingType } from "../utils/article";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function Saved() {
   const [articles, setArticles] = useState<SavedArticle[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [selectedVersionIndex, setSelectedVersionIndex] = useState(0);
 
   useEffect(() => {
     loadArticles();
@@ -33,8 +34,21 @@ export default function Saved() {
     return new Date(dateString).toLocaleString();
   }
 
-  const selectedArticle =
-    selectedIndex !== null ? articles[selectedIndex] : null;
+  function getProcessingTypeLabel(type: ProcessingType): string {
+    switch (type) {
+      case 'original':
+        return 'Original';
+      case 'neutralized':
+        return 'Neutralized';
+      case 'factchecked':
+        return 'Fact Checked';
+      default:
+        return 'Unknown';
+    }
+  }
+
+  const selectedArticle = selectedIndex !== null ? articles[selectedIndex] : null;
+  const selectedVersion = selectedArticle?.versions[selectedVersionIndex];
 
   return (
     <div>
@@ -47,7 +61,10 @@ export default function Saved() {
       ) : selectedArticle ? (
         <div>
           <button
-            onClick={() => setSelectedIndex(null)}
+            onClick={() => {
+              setSelectedIndex(null);
+              setSelectedVersionIndex(0);
+            }}
             className="text-sm text-blue-400 hover:text-blue-300 mb-4"
           >
             ← Back to list
@@ -71,13 +88,40 @@ export default function Saved() {
             </p>
           </div>
 
-          {selectedArticle.processedText && (
-            <div className="bg-slate-800 p-4 rounded-lg mb-4">
-              <h3 className="text-lg font-semibold mb-2">Processed Text</h3>
-              <p className="whitespace-pre-wrap">
-                {selectedArticle.processedText}
-              </p>
-            </div>
+          {selectedArticle.versions.length > 0 && (
+            <>
+              {selectedArticle.versions.length > 1 && (
+                <div className="flex gap-2 mb-4">
+                  {selectedArticle.versions.map((version, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedVersionIndex(index)}
+                      className={`px-3 py-1 rounded text-sm transition-colors ${
+                        selectedVersionIndex === index
+                          ? 'bg-blue-500 text-white'
+                          : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                      }`}
+                    >
+                      {getProcessingTypeLabel(version.type)}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <div className="bg-slate-800 p-4 rounded-lg mb-4">
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="text-lg font-semibold">
+                    {getProcessingTypeLabel(selectedVersion?.type || 'original')}
+                  </h3>
+                  <p className="text-xs text-gray-500">
+                    {formatDate(selectedVersion?.processedAt)}
+                  </p>
+                </div>
+                <p className="whitespace-pre-wrap">
+                  {selectedVersion?.content || 'No content available'}
+                </p>
+              </div>
+            </>
           )}
 
           <button
@@ -93,7 +137,7 @@ export default function Saved() {
         <ul className="mt-4 space-y-4 list-none p-0">
           {articles.map((article, index) => (
             <li
-              key={index}
+              key={article.id || index}
               className="bg-slate-800 p-4 rounded cursor-pointer hover:bg-slate-700 transition-colors"
               onClick={() => setSelectedIndex(index)}
             >
@@ -106,6 +150,11 @@ export default function Saved() {
                   <p className="text-xs text-gray-500 mt-1">
                     {formatDate(article.savedAt)}
                   </p>
+                  {article.versions.length > 0 && (
+                    <p className="text-xs text-gray-400 mt-1">
+                      {article.versions.length} version{article.versions.length > 1 ? 's' : ''}
+                    </p>
+                  )}
                 </div>
                 <button
                   onClick={(e) => {

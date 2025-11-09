@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { neutralizeText, factCheckText } from "../backend/gemini";
 import { tabs } from "../utils/tabs";
 import { storage } from "../utils/storage";
-import type { Article } from "../utils/article";
+import type { Article, ProcessingType } from "../utils/article";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 
@@ -10,6 +10,7 @@ export default function Main() {
   const [displayText, setDisplayText] = useState("Loading article...");
   const [articleData, setArticleData] = useState<Article | null>(null);
   const [isAlreadySaved, setIsAlreadySaved] = useState(false);
+  const [currentProcessingType, setCurrentProcessingType] = useState<ProcessingType>('original');
 
   useEffect(() => {
     handleExtract();
@@ -40,6 +41,7 @@ export default function Main() {
       }
       
       setArticleData(article);
+      setCurrentProcessingType('original');
     } catch (error) {
       console.error("Extraction failed:", error);
       setDisplayText("Couldn't read from this page.");
@@ -57,6 +59,7 @@ export default function Main() {
     try {
       const result = await neutralizeText(articleData.text);
       setDisplayText(result || "Could not neutralize this text.");
+      setCurrentProcessingType('neutralized');
     } catch (err) {
       console.error("Neutralization failed:", err);
       setDisplayText("Error: " + (err as Error).message);
@@ -74,6 +77,7 @@ export default function Main() {
     try {
       const result = await factCheckText(articleData.text);
       setDisplayText(result || "Could not fact-check this text.");
+      setCurrentProcessingType('factchecked');
     } catch (err) {
       console.error("Fact-check failed:", err);
       setDisplayText("Error: " + (err as Error).message);
@@ -92,11 +96,19 @@ export default function Main() {
     }
 
     try {
+      const version = {
+        type: currentProcessingType,
+        content: displayText,
+        processedAt: new Date().toISOString(),
+      };
+
       await storage.saveArticle({
         ...articleData,
-        processedText: displayText,
+        id: `${articleData.url}-${Date.now()}`,
+        versions: [version],
         savedAt: new Date().toISOString(),
       });
+      
       setIsAlreadySaved(true);
       setDisplayText("Article saved successfully!");
     } catch (err) {
