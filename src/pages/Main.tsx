@@ -16,7 +16,7 @@ export default function Main() {
   const [bannerMessage, setBannerMessage] = useState<{
     text: string;
     variant: "error" | "info" | "success";
-  } | null>(null);
+  }>({text: "Hello", variant: "info"});
 
   useEffect(() => {
     handleExtract();
@@ -54,7 +54,7 @@ export default function Main() {
       setCurrentProcessingType('original');
       setOriginalText(article.text);
       setCanSave(false);
-      setBannerMessage(null);
+      setBannerMessage({text: "", variant: "info"});
     } catch (error) {
       console.error("Extraction failed:", error);
       setDisplayText("Couldn't read from this page.");
@@ -74,7 +74,7 @@ export default function Main() {
       setDisplayText(result || "Could not neutralize this text.");
       setCurrentProcessingType('neutralized');
       setCanSave(Boolean(result));
-      setBannerMessage(null);
+      setBannerMessage({text: "", variant: "info"});
     } catch (err) {
       console.error("Neutralization failed:", err);
       setDisplayText("Error: " + (err as Error).message);
@@ -146,7 +146,7 @@ export default function Main() {
 
   return (
     <div>
-      <div className="flex flex-row mb-2.5">
+      <div className="flex flex-row mb-4">
         <h1 className="mr-3">Article Neutralizer</h1>
         {isAlreadySaved ? (
           <BookmarkAddedIcon 
@@ -162,19 +162,12 @@ export default function Main() {
         )}
       </div>
 
-      <div className="flex gap-2 mb-3.5">
-        <button
-          className="border rounded-sm border-ctp-text p-1 hover:bg-ctp-text hover:text-ctp-crust transition-colors"
-          onClick={handleNeutralize}
-        >
-          Neutralize
+      <div className="flex flex-row gap-6 w-full justify-center items-center mb-3.5">
+        <button className="medButton" onClick={handleNeutralize}>
+          <h3>Neutralize</h3>
         </button>
-
-        <button
-          className="border rounded-sm border-ctp-text p-1 hover:bg-ctp-text hover:text-ctp-crust transition-colors"
-          onClick={handleFactCheck}
-        >
-          Fact Check
+        <button className="medButton" onClick={handleFactCheck}>
+          <h3>Fact Check</h3>
         </button>
       </div>
 
@@ -182,10 +175,10 @@ export default function Main() {
         <div
           className={`mt-2 text-sm font-medium ${
             bannerMessage.variant === "error"
-              ? "text-red-500"
+              ? "text-ctp-red"
               : bannerMessage.variant === "success"
-              ? "text-green-500"
-              : "text-blue-500"
+              ? "text-ctp-green"
+              : "text-ctp-subtext0"
           }`}
         >
           {bannerMessage.text}

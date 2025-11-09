@@ -13,6 +13,22 @@ h1 {
 	@apply text-3xl;
 }
 
+h2 {
+	@apply text-2xl;
+}
+
+h3 {
+	@apply text-xl;
+}
+
 h6 {
 	@apply text-xs;
+}
+
+.bigButton {
+	@apply rounded-full h-28 w-9/10 bg-ctp-base items-center shadow-lg shadow-ctp-crust hover:bg-ctp-surface0 active:bg-ctp-surface1 transition-colors duration-250;
+}
+
+.medButton {
+	@apply rounded-full h-14 w-40 bg-ctp-base items-center shadow-md shadow-ctp-crust hover:bg-ctp-surface0 active:bg-ctp-surface1 transition-colors duration-250;
 }
