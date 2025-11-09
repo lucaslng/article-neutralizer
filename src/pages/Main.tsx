@@ -31,6 +31,13 @@ export default function Main() {
     return savedArticles.some(article => article.url === url);
   }
 
+  async function checkIfVersionSaved(url: string, type: ProcessingType): Promise<boolean> {
+    const savedArticles = await storage.getSavedArticles();
+    const article = savedArticles.find(a => a.url === url);
+    if (!article) return false;
+    return article.versions.some(v => v.type === type);
+  }
+
   async function handleExtract() {
     setDisplayText("Extracting article...");
     
@@ -51,8 +58,8 @@ export default function Main() {
       }
       
       setArticleData(article);
-      setCurrentProcessingType('original');
       setOriginalText(article.text);
+      setCurrentProcessingType('original');
       setCanSave(false);
       setBannerMessage(null);
     } catch (error) {
@@ -73,8 +80,13 @@ export default function Main() {
       const result = await neutralizeText(originalText);
       setDisplayText(result || "Could not neutralize this text.");
       setCurrentProcessingType('neutralized');
-      setCanSave(Boolean(result));
+      setCanSave(true);
       setBannerMessage(null);
+      
+      if (articleData) {
+        const versionSaved = await checkIfVersionSaved(articleData.url, 'neutralized');
+        setIsAlreadySaved(versionSaved);
+      }
     } catch (err) {
       console.error("Neutralization failed:", err);
       setDisplayText("Error: " + (err as Error).message);
@@ -94,8 +106,13 @@ export default function Main() {
       const result = await factCheckText(originalText);
       setDisplayText(result || "Could not fact-check this text.");
       setCurrentProcessingType('factchecked');
-      setCanSave(false);
-      showBanner("Neutralize the article before saving it.", "info");
+      setCanSave(true);
+      setBannerMessage(null);
+      
+      if (articleData) {
+        const versionSaved = await checkIfVersionSaved(articleData.url, 'factchecked');
+        setIsAlreadySaved(versionSaved);
+      }
     } catch (err) {
       console.error("Fact-check failed:", err);
       setDisplayText("Error: " + (err as Error).message);
@@ -105,42 +122,53 @@ export default function Main() {
 
   async function handleSave() {
     if (!articleData) {
-      setDisplayText("No article data to save.");
+      showBanner("No article data to save.", "error");
       return;
     }
 
     if (!canSave) {
-      showBanner("Please neutralize the article before saving it.", "error");
-      return;
-    }
-
-    if (isAlreadySaved) {
-      setDisplayText("This article is already saved.");
+      showBanner("Please neutralize or fact-check the article before saving it.", "error");
       return;
     }
 
     try {
-      const version = {
+      const articles = await storage.getSavedArticles();
+      const existingArticle = articles.find(a => a.url === articleData.url);
+
+      const newVersion = {
         type: currentProcessingType,
         content: displayText,
         processedAt: new Date().toISOString(),
       };
 
-      await storage.saveArticle({
-        ...articleData,
-        id: `${articleData.url}-${Date.now()}`,
-        versions: [version],
-        savedAt: new Date().toISOString(),
-      });
-      
-      setIsAlreadySaved(true);
-      setDisplayText("Article saved successfully!");
-      showBanner("Article saved to bookmarks.", "success");
+      if (existingArticle) {
+        const existingVersionIndex = existingArticle.versions.findIndex(v => v.type === currentProcessingType);
+        
+        if (existingVersionIndex !== -1) {
+          const updatedVersions = [...existingArticle.versions];
+          updatedVersions[existingVersionIndex] = newVersion;
+          await storage.updateArticleVersions(articleData.url, updatedVersions);
+          showBanner(`${currentProcessingType === 'neutralized' ? 'Neutralized' : 'Fact-checked'} version updated.`, "success");
+          setIsAlreadySaved(true);
+        } else {
+          await storage.updateArticleVersions(articleData.url, [...existingArticle.versions, newVersion]);
+          showBanner("New version saved to bookmarks.", "success");
+          setIsAlreadySaved(true);
+        }
+      } else {
+        await storage.saveArticle({
+          ...articleData,
+          id: `${articleData.url}-${Date.now()}`,
+          versions: [newVersion],
+          savedAt: new Date().toISOString(),
+        });
+        showBanner("Article saved to bookmarks.", "success");
+        setIsAlreadySaved(true);
+      }
     } catch (err) {
       console.error("Save failed:", err);
       const errorMsg = err instanceof Error ? err.message : "Error saving article.";
-      setDisplayText(errorMsg);
-      showBanner("Could not save the article. Please try again.", "error");
+      showBanner(errorMsg, "error");
     }
   }
 
@@ -164,14 +192,14 @@ export default function Main() {
 
       <div className="flex gap-2 mb-3.5">
         <button
-          className="border rounded-sm border-ctp-text p-1 hover:bg-ctp-text hover:text-ctp-crust transition-colors"
+          className="border rounded-sm border-white p-1 hover:bg-white hover:text-black transition-colors"
           onClick={handleNeutralize}
         >
           Neutralize
         </button>
 
         <button
-          className="border rounded-sm border-ctp-text p-1 hover:bg-ctp-text hover:text-ctp-crust transition-colors"
+          className="border rounded-sm border-white p-1 hover:bg-white hover:text-black transition-colors"
           onClick={handleFactCheck}
         >
           Fact Check
@@ -192,7 +220,7 @@ export default function Main() {
         </div>
       )}
 
-      <div className="mt-4 p-4 rounded">
+      <div className="mt-4 bg-slate-800 p-4 rounded">
         <p className="whitespace-pre-wrap">{displayText}</p>
       </div>
     </div>
