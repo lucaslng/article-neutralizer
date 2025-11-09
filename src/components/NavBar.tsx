@@ -22,7 +22,7 @@ function NavBarItem(props: {
         <div className={`w-14 h-8 rounded-full ${props.pageId == props.currentPageId ? "hover:bg-ctp-surface2" : "hover:bg-ctp-surface0"} transition-colors duration-300 flex items-center justify-center`}>
           {props.icon}
         </div>
-        <h6 className={`w-full text-sm text-center transition-all duration-300 ${props.pageId == props.currentPageId ? "font-semibold" : "font-normal"}`}>
+        <h6 className={`w-full text-sm text-center transition-color duration-300 ${props.pageId == props.currentPageId ? "font-semibold text-ctp-subtext1" : "font-normal text-ctp-subtext0"}`}>
           {props.label}
         </h6>
       </button>
