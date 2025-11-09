@@ -107,7 +107,7 @@ export default function Main() {
       setDisplayText(result || "Could not fact-check this text.");
       setCurrentProcessingType('factchecked');
       setCanSave(true);
-      setBannerMessage(null);
+      setBannerMessage({text: "", variant: "info"});
       
       if (articleData) {
         const versionSaved = await checkIfVersionSaved(articleData.url, 'factchecked');
@@ -213,7 +213,7 @@ export default function Main() {
         </div>
       )}
 
-      <div className="mt-4 bg-slate-800 p-4 rounded">
+      <div className="mt-4 bg-ctp-base p-4 rounded-lg shadow-sm shadow-ctp-crust">
         <p className="whitespace-pre-wrap">{displayText}</p>
       </div>
     </div>

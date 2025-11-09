@@ -30,5 +30,5 @@ h6 {
 }
 
 .medButton {
-	@apply rounded-full h-14 w-40 bg-ctp-base items-center shadow-md shadow-ctp-crust hover:bg-ctp-surface0 active:bg-ctp-surface1 transition-colors duration-250;
+	@apply rounded-full h-14 w-40 bg-ctp-base items-center shadow-sm shadow-ctp-crust hover:bg-ctp-surface0 active:bg-ctp-surface1 transition-colors duration-250;
 }
