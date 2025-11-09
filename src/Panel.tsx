@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import NavBar from "./components/NavBar";
-import Neutralize from "./pages/Neutralize";
+import Neutralize from "./pages/Main";
 import Saved from "./pages/Saved";
 import Settings from "./pages/Settings";
 

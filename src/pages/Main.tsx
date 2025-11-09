@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { neutralizeText } from "../backend/gemini";
+import { neutralizeText, factCheckText } from "../backend/gemini";
 
 export default function Neutralize() {
   const [article, setArticle] = useState("Extracted text will appear here");
@@ -68,6 +68,23 @@ export default function Neutralize() {
     }
   }
 
+  async function factCheck() {
+    if (!extractedText) {
+      setArticle("Please extract an article first.");
+      return;
+    }
+
+    setArticle("Fact-checking text...");
+
+    try {
+      const result = await factCheckText(extractedText);
+      setArticle(result || "Could not fact-check this text.");
+    } catch (err) {
+      console.error("Fact-check failed:", err);
+      setArticle("Error while fact-checking text: " + (err as Error).message);
+    }
+  }
+
   return (
     <div>
       <h1>Article Neutralizer</h1>
@@ -84,6 +101,13 @@ export default function Neutralize() {
         onClick={() => neutralize()}
       >
         Neutralize
+      </button>
+
+      <button
+        className="border rounded-sm border-white p-1"
+        onClick={() => factCheck()}
+      >
+        Fact Check
       </button>
 
       <div className="mt-4 bg-slate-800 p-4 rounded">
