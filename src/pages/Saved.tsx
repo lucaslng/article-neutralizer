@@ -151,15 +151,16 @@ export default function Saved() {
               </p>
             </div>
           )}
-
-          <button
-            onClick={() =>
-              selectedIndex !== null && handleDelete(selectedIndex)
-            }
-            className="w-full border border-ctp-red text-ctp-red px-4 py-2 rounded hover:bg-ctp-red hover:text-ctp-text transition-colors"
-          >
-            Delete Article
-          </button>
+          <div className="flex justify-center">
+            <button
+              onClick={() =>
+                selectedIndex !== null && handleDelete(selectedIndex)
+              }
+              className="cursor-pointer w-9/10 bg-ctp-red hover:bg-ctp-red-400 hover:text-ctp-mantle! text-ctp-crust! text-sm text-center py-3 rounded-full shadow-xs shadow-ctp-crust transition-colors duration:250"
+            >
+              Delete Article
+            </button>
+          </div>
         </div>
       ) : (
         <ul className="mt-4 space-y-4 list-none p-0">
