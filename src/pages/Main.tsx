@@ -1,14 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { neutralizeText, factCheckText } from "../backend/gemini";
 import { tabs } from "../utils/tabs";
 import { storage } from "../utils/storage";
 import type { Article } from "../utils/article";
-
 import BookmarkIcon from "@mui/icons-material/Bookmark";
+import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 
 export default function Main() {
-  const [displayText, setDisplayText] = useState("Extracted text will appear here");
+  const [displayText, setDisplayText] = useState("Loading article...");
   const [articleData, setArticleData] = useState<Article | null>(null);
+  const [isAlreadySaved, setIsAlreadySaved] = useState(false);
+
+  useEffect(() => {
+    handleExtract();
+  }, []);
+
+  async function checkIfSaved(url: string): Promise<boolean> {
+    const savedArticles = await storage.getSavedArticles();
+    return savedArticles.some(article => article.url === url);
+  }
 
   async function handleExtract() {
     setDisplayText("Extracting article...");
@@ -16,12 +26,20 @@ export default function Main() {
     try {
       const article = await tabs.extractArticle();
       if (!article) {
-        setDisplayText("No readable content found.");
+        setDisplayText("No readable content found on this page.");
         return;
       }
       
+      const isSaved = await checkIfSaved(article.url);
+      setIsAlreadySaved(isSaved);
+      
+      if (isSaved) {
+        setDisplayText("This article is already saved. Click 'Neutralize' or 'Fact Check' to process.");
+      } else {
+        setDisplayText("Article extracted successfully. Click 'Neutralize' or 'Fact Check' to process.");
+      }
+      
       setArticleData(article);
-      setDisplayText("Extraction complete");
     } catch (error) {
       console.error("Extraction failed:", error);
       setDisplayText("Couldn't read from this page.");
@@ -30,7 +48,7 @@ export default function Main() {
 
   async function handleNeutralize() {
     if (!articleData?.text) {
-      setDisplayText("Please extract an article first.");
+      setDisplayText("No article content available.");
       return;
     }
 
@@ -47,7 +65,7 @@ export default function Main() {
 
   async function handleFactCheck() {
     if (!articleData?.text) {
-      setDisplayText("Please extract an article first.");
+      setDisplayText("No article content available.");
       return;
     }
 
@@ -64,7 +82,12 @@ export default function Main() {
 
   async function handleSave() {
     if (!articleData) {
-      console.warn("No article data to save.");
+      setDisplayText("No article data to save.");
+      return;
+    }
+
+    if (isAlreadySaved) {
+      setDisplayText("This article is already saved.");
       return;
     }
 
@@ -74,10 +97,12 @@ export default function Main() {
         processedText: displayText,
         savedAt: new Date().toISOString(),
       });
+      setIsAlreadySaved(true);
       setDisplayText("Article saved successfully!");
     } catch (err) {
       console.error("Save failed:", err);
-      setDisplayText("Error saving article.");
+      const errorMsg = err instanceof Error ? err.message : "Error saving article.";
+      setDisplayText(errorMsg);
     }
   }
 
@@ -85,21 +110,21 @@ export default function Main() {
     <div>
       <div className="flex flex-row mb-2.5">
         <h1 className="mr-3">Article Neutralizer</h1>
-        <BookmarkIcon 
-          fontSize="large" 
-          onClick={handleSave}
-          className="cursor-pointer hover:text-blue-400 transition-colors"
-        />
+        {isAlreadySaved ? (
+          <BookmarkAddedIcon 
+            fontSize="large" 
+            className="text-blue-400 cursor-default"
+          />
+        ) : (
+          <BookmarkIcon 
+            fontSize="large" 
+            onClick={handleSave}
+            className="cursor-pointer hover:text-blue-400 transition-colors"
+          />
+        )}
       </div>
 
       <div className="flex gap-2 mb-3.5">
-        <button
-          className="border rounded-sm border-ctp-text p-1 hover:bg-ctp-text hover:text-ctp-crust transition-colors"
-          onClick={handleExtract}
-        >
-          Extract
-        </button>
-
         <button
           className="border rounded-sm border-ctp-text p-1 hover:bg-ctp-text hover:text-ctp-crust transition-colors"
           onClick={handleNeutralize}

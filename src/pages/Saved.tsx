@@ -28,13 +28,6 @@ export default function Saved() {
     }
   }
 
-  async function handleClearAll() {
-    if (window.confirm("Delete all saved articles?")) {
-      await storage.clearAllArticles();
-      setSelectedIndex(null);
-    }
-  }
-
   function formatDate(dateString?: string) {
     if (!dateString) return "Unknown date";
     return new Date(dateString).toLocaleString();
@@ -47,14 +40,6 @@ export default function Saved() {
     <div>
       <div className="flex flex-row justify-between items-center mb-4">
         <h1>Saved Articles</h1>
-        {articles.length > 0 && (
-          <button
-            className="border rounded-sm border-ctp-red text-ctp-red px-3 py-1 hover:bg-ctp-red hover:text-ctp-text transition-colors"
-            onClick={handleClearAll}
-          >
-            Clear All
-          </button>
-        )}
       </div>
 
       {articles.length === 0 ? (
