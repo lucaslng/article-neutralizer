@@ -1,24 +1,26 @@
 import { useState, useEffect } from "react";
-// import { callGemini } from "../backend/gemini";
+import { callGemini } from "../backend/gemini";
 import { neutralizeText, factCheckText } from "../backend/tools";
 import { tabs } from "../utils/tabs";
 import { storage } from "../utils/storage";
 import type { Article, ProcessingType } from "../utils/article";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
-import { callDummy } from "../backend/dummy";
+// import { callDummy } from "../backend/dummy";
+import Cubes from "../components/Cubes";
 
 export default function Main() {
   const [displayText, setDisplayText] = useState("Loading article...");
   const [articleData, setArticleData] = useState<Article | null>(null);
   const [isAlreadySaved, setIsAlreadySaved] = useState(false);
-  const [currentProcessingType, setCurrentProcessingType] = useState<ProcessingType>('original');
+  const [currentProcessingType, setCurrentProcessingType] =
+    useState<ProcessingType>("original");
   const [originalText, setOriginalText] = useState<string>("");
   const [canSave, setCanSave] = useState(false);
   const [bannerMessage, setBannerMessage] = useState<{
     text: string;
     variant: "error" | "info" | "success";
-  }>({text: "", variant: "info"});
+  }>({ text: "", variant: "info" });
 
   useEffect(() => {
     function handleTabChange() {
@@ -49,40 +51,47 @@ export default function Main() {
 
   async function checkIfSaved(url: string): Promise<boolean> {
     const savedArticles = await storage.getSavedArticles();
-    return savedArticles.some(article => article.url === url);
+    return savedArticles.some((article) => article.url === url);
   }
 
-  async function checkIfVersionSaved(url: string, type: ProcessingType): Promise<boolean> {
+  async function checkIfVersionSaved(
+    url: string,
+    type: ProcessingType
+  ): Promise<boolean> {
     const savedArticles = await storage.getSavedArticles();
-    const article = savedArticles.find(a => a.url === url);
+    const article = savedArticles.find((a) => a.url === url);
     if (!article) return false;
-    return article.versions.some(v => v.type === type);
+    return article.versions.some((v) => v.type === type);
   }
 
   async function handleExtract() {
     setDisplayText("Extracting article...");
-    
+
     try {
       const article = await tabs.extractArticle();
       if (!article) {
         setDisplayText("No readable content found on this page.");
         return;
       }
-      
+
       const isSaved = await checkIfSaved(article.url);
       setIsAlreadySaved(isSaved);
-      
+
       if (isSaved) {
-        setDisplayText("This article is already saved. Click 'Neutralize' or 'Fact Check' to process.");
+        setDisplayText(
+          "This article is already saved. Click 'Neutralize' or 'Fact Check' to process."
+        );
       } else {
-        setDisplayText("Article extracted successfully. Click 'Neutralize' or 'Fact Check' to process.");
+        setDisplayText(
+          "Article extracted successfully. Click 'Neutralize' or 'Fact Check' to process."
+        );
       }
-      
+
       setArticleData(article);
       setOriginalText(article.text);
-      setCurrentProcessingType('original');
+      setCurrentProcessingType("original");
       setCanSave(false);
-      setBannerMessage({text: "", variant: "info"});
+      setBannerMessage({ text: "", variant: "info" });
     } catch (error) {
       console.error("Extraction failed:", error);
       setDisplayText("Couldn't read from this page.");
@@ -98,20 +107,26 @@ export default function Main() {
     setDisplayText("Neutralizing text...");
 
     try {
-      const result = await neutralizeText(originalText, callDummy);
+      const result = await neutralizeText(originalText, callGemini);
       setDisplayText(result || "Could not neutralize this text.");
-      setCurrentProcessingType('neutralized');
+      setCurrentProcessingType("neutralized");
       setCanSave(true);
-      setBannerMessage({text: "", variant: "info"});
-      
+      setBannerMessage({ text: "", variant: "info" });
+
       if (articleData) {
-        const versionSaved = await checkIfVersionSaved(articleData.url, 'neutralized');
+        const versionSaved = await checkIfVersionSaved(
+          articleData.url,
+          "neutralized"
+        );
         setIsAlreadySaved(versionSaved);
       }
     } catch (err) {
       console.error("Neutralization failed:", err);
       setDisplayText("Error: " + (err as Error).message);
-      showBanner("Something went wrong while neutralizing. Please try again.", "error");
+      showBanner(
+        "Something went wrong while neutralizing. Please try again.",
+        "error"
+      );
     }
   }
 
@@ -124,20 +139,26 @@ export default function Main() {
     setDisplayText("Fact-checking text...");
 
     try {
-      const result = await factCheckText(originalText, callDummy);
+      const result = await factCheckText(originalText, callGemini);
       setDisplayText(result || "Could not fact-check this text.");
-      setCurrentProcessingType('factchecked');
+      setCurrentProcessingType("factchecked");
       setCanSave(true);
-      setBannerMessage({text: "", variant: "info"});
-      
+      setBannerMessage({ text: "", variant: "info" });
+
       if (articleData) {
-        const versionSaved = await checkIfVersionSaved(articleData.url, 'factchecked');
+        const versionSaved = await checkIfVersionSaved(
+          articleData.url,
+          "factchecked"
+        );
         setIsAlreadySaved(versionSaved);
       }
     } catch (err) {
       console.error("Fact-check failed:", err);
       setDisplayText("Error: " + (err as Error).message);
-      showBanner("Something went wrong while fact-checking. Please try again.", "error");
+      showBanner(
+        "Something went wrong while fact-checking. Please try again.",
+        "error"
+      );
     }
   }
 
@@ -148,13 +169,16 @@ export default function Main() {
     }
 
     if (!canSave) {
-      showBanner("Please neutralize or fact-check the article before saving it.", "error");
+      showBanner(
+        "Please neutralize or fact-check the article before saving it.",
+        "error"
+      );
       return;
     }
 
     try {
       const articles = await storage.getSavedArticles();
-      const existingArticle = articles.find(a => a.url === articleData.url);
+      const existingArticle = articles.find((a) => a.url === articleData.url);
 
       const newVersion = {
         type: currentProcessingType,
@@ -163,16 +187,28 @@ export default function Main() {
       };
 
       if (existingArticle) {
-        const existingVersionIndex = existingArticle.versions.findIndex(v => v.type === currentProcessingType);
-        
+        const existingVersionIndex = existingArticle.versions.findIndex(
+          (v) => v.type === currentProcessingType
+        );
+
         if (existingVersionIndex !== -1) {
           const updatedVersions = [...existingArticle.versions];
           updatedVersions[existingVersionIndex] = newVersion;
           await storage.updateArticleVersions(articleData.url, updatedVersions);
-          showBanner(`${currentProcessingType === 'neutralized' ? 'Neutralized' : 'Fact-checked'} version updated.`, "success");
+          showBanner(
+            `${
+              currentProcessingType === "neutralized"
+                ? "Neutralized"
+                : "Fact-checked"
+            } version updated.`,
+            "success"
+          );
           setIsAlreadySaved(true);
         } else {
-          await storage.updateArticleVersions(articleData.url, [...existingArticle.versions, newVersion]);
+          await storage.updateArticleVersions(articleData.url, [
+            ...existingArticle.versions,
+            newVersion,
+          ]);
           showBanner("New version saved to bookmarks.", "success");
           setIsAlreadySaved(true);
         }
@@ -188,58 +224,69 @@ export default function Main() {
       }
     } catch (err) {
       console.error("Save failed:", err);
-      const errorMsg = err instanceof Error ? err.message : "Error saving article.";
+      const errorMsg =
+        err instanceof Error ? err.message : "Error saving article.";
       showBanner(errorMsg, "error");
     }
   }
 
   return (
-    <div>
-      <div className="flex flex-row mb-4 w-full justify-between items-center">
-        <h1 className="mr-3">Article Neutralizer</h1>
-        <div className="mr-3">
-          {isAlreadySaved ? (
-          <button className="cursor-pointer self-end mr-1 mb-1 hover:bg-ctp-surface1 rounded-full text-ctp-subtext0 transition-colors">
-            <BookmarkAddedIcon 
-            fontSize="large"
-            /> 
+    <div className="relative z-10 h-max">
+      <div className="absolute inset-0 top-120 flex items-center justify-center -z-10">
+        <Cubes
+          gridSize={8}
+          maxAngle={60}
+          radius={4}
+          borderStyle="2px solid #a6adc8"
+          faceColor="#181825"
+          rippleColor="#1e1e2e"
+          rippleSpeed={1.5}
+          autoAnimate={false}
+          rippleOnClick={true}
+        />
+      </div>
+      <div className="z-10">
+        <div className="flex flex-row mb-4 w-full justify-between items-center">
+          <h1 className="mr-3">Article Neutralizer</h1>
+          <div className="mr-3">
+            {isAlreadySaved ? (
+              <button className="cursor-pointer self-end mr-1 mb-1 hover:bg-ctp-surface1 rounded-full text-ctp-subtext0 transition-colors">
+                <BookmarkAddedIcon fontSize="large" />
+              </button>
+            ) : (
+              <button className="cursor-pointer self-end mr-1 mb-1 hover:bg-ctp-surface1 rounded-full text-ctp-subtext0 transition-colors">
+                <BookmarkIcon fontSize="large" onClick={handleSave} />
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="flex flex-row gap-6 w-full justify-center items-center mb-3.5">
+          <button className="medButton" onClick={handleNeutralize}>
+            <h3>Neutralize</h3>
           </button>
-          ) : (
-            <button className="cursor-pointer self-end mr-1 mb-1 hover:bg-ctp-surface1 rounded-full text-ctp-subtext0 transition-colors">
-              <BookmarkIcon 
-                fontSize="large" 
-                onClick={handleSave} 
-              /> 
-            </button>
-          )}
+          <button className="medButton" onClick={handleFactCheck}>
+            <h3>Fact Check</h3>
+          </button>
         </div>
-      </div>
 
-      <div className="flex flex-row gap-6 w-full justify-center items-center mb-3.5">
-        <button className="medButton" onClick={handleNeutralize}>
-          <h3>Neutralize</h3>
-        </button>
-        <button className="medButton" onClick={handleFactCheck}>
-          <h3>Fact Check</h3>
-        </button>
-      </div>
+        {bannerMessage && (
+          <div
+            className={`mt-2 text-sm font-medium ${
+              bannerMessage.variant === "error"
+                ? "text-ctp-red"
+                : bannerMessage.variant === "success"
+                ? "text-ctp-green"
+                : "text-ctp-subtext0"
+            }`}
+          >
+            {bannerMessage.text}
+          </div>
+        )}
 
-      {bannerMessage && (
-        <div
-          className={`mt-2 text-sm font-medium ${
-            bannerMessage.variant === "error"
-              ? "text-ctp-red"
-              : bannerMessage.variant === "success"
-              ? "text-ctp-green"
-              : "text-ctp-subtext0"
-          }`}
-        >
-          {bannerMessage.text}
+        <div className="mt-4 bg-ctp-base p-4 rounded-lg shadow-sm shadow-ctp-crust">
+          <p className="whitespace-pre-wrap">{displayText}</p>
         </div>
-      )}
-
-      <div className="mt-4 bg-ctp-base p-4 rounded-lg shadow-sm shadow-ctp-crust">
-        <p className="whitespace-pre-wrap">{displayText}</p>
       </div>
     </div>
   );
