@@ -57,33 +57,30 @@ export default function Saved() {
       </div>
 
       {articles.length === 0 ? (
-        <p className="mt-4 text-gray-400">No saved articles yet.</p>
+        <p className="mt-4 text-ctp-subtext0">No saved articles yet.</p>
       ) : selectedArticle ? (
         <div>
           <button
-            onClick={() => {
-              setSelectedIndex(null);
-              setSelectedVersionIndex(0);
-            }}
-            className="text-sm text-blue-400 hover:text-blue-300 mb-4"
+            onClick={() => setSelectedIndex(null)}
+            className="cursor-pointer text-ctp-subtext0 text-sm hover:text-ctp-text mb-4 transition-colors"
           >
             ← Back to list
           </button>
 
-          <div className="bg-slate-800 p-4 rounded-lg mb-4">
+          <div className="bg-ctp-base p-4 rounded-lg mb-4">
             <h2 className="text-xl font-bold mb-2">{selectedArticle.title}</h2>
             <a
               href={selectedArticle.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-blue-400 hover:text-blue-300 break-all"
+              className="cursor-pointer text-sm text-ctp-blue break-all"
             >
               {selectedArticle.url}
             </a>
-            <p className="text-sm text-gray-400 mt-2">
+            <p className="text-sm text-ctp-subtext1 mt-2">
               {selectedArticle.domain}
             </p>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-ctp-subtext1 mt-1">
               Saved: {formatDate(selectedArticle.savedAt)}
             </p>
           </div>
@@ -128,7 +125,7 @@ export default function Saved() {
             onClick={() =>
               selectedIndex !== null && handleDelete(selectedIndex)
             }
-            className="w-full border border-red-500 text-red-500 px-4 py-2 rounded hover:bg-red-500 hover:text-white transition-colors"
+            className="w-full border border-ctp-red text-ctp-red px-4 py-2 rounded hover:bg-ctp-red hover:text-ctp-text transition-colors"
           >
             Delete Article
           </button>
@@ -137,17 +134,17 @@ export default function Saved() {
         <ul className="mt-4 space-y-4 list-none p-0">
           {articles.map((article, index) => (
             <li
-              key={article.id || index}
-              className="bg-slate-800 p-4 rounded cursor-pointer hover:bg-slate-700 transition-colors"
+              key={index}
+              className="bg-ctp-base p-4 rounded cursor-pointer hover:bg-ctp-surface0 transition-colors"
               onClick={() => setSelectedIndex(index)}
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <h2 className="text-xl font-bold">{article.title}</h2>
-                  <p className="text-sm text-gray-400 mt-1">
+                  <p className="text-sm text-ctp-subtext1 mt-1">
                     {article.domain}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-ctp-subtext1 mt-1">
                     {formatDate(article.savedAt)}
                   </p>
                   {article.versions.length > 0 && (
@@ -161,7 +158,7 @@ export default function Saved() {
                     e.stopPropagation();
                     handleDelete(index);
                   }}
-                  className="text-red-400 hover:text-red-300 text-sm px-2 flex items-center gap-1"
+                  className="cursor-pointer text-ctp-red text-sm px-2 flex items-center gap-1"
                 >
                   <DeleteIcon fontSize="small" />
                   Delete

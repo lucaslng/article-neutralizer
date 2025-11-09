@@ -1,8 +1,11 @@
 @import "tailwindcss";
+@import "@catppuccin/tailwindcss/mocha.css";
 @import '@fontsource/inter';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
 
 * {
-	@apply text-white;
+	@apply text-ctp-text;
 	font-family: 'Inter', sans-serif;
 }
 
@@ -10,6 +13,6 @@ h1 {
 	@apply text-3xl;
 }
 
-h5 {
-	@apply text-sm;
+h6 {
+	@apply text-xs text-ctp-subtext0;
 }

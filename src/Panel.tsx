@@ -9,7 +9,7 @@ function Panel() {
 	const [pageId, setPageId] = useState(0);
 
 	return (
-		<div className="min-h-screen bg-slate-950">
+		<div className="min-h-screen bg-ctp-mantle">
 			<div className="p-4 pb-32">
 				{pageId === 0 && <Neutralize />}
 				{pageId === 1 && <Saved />}
