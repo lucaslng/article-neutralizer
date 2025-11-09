@@ -17,9 +17,11 @@ function NavBarItem(props: {
       <button
         ref={props.buttonRef}
         onClick={() => props.setPage(props.pageId)}
-        className="cursor-pointer flex flex-col w-full items-center gap-2"
+        className="cursor-pointer flex flex-col w-full items-center gap-1"
       >
-        {props.icon}
+        <div className={`w-14 h-8 rounded-full ${props.pageId == props.currentPageId ? "hover:bg-ctp-surface2" : "hover:bg-ctp-surface0"} transition-colors duration-300 flex items-center justify-center`}>
+          {props.icon}
+        </div>
         <h6 className="w-full text-sm text-center transition-all duration-300">
           {props.label}
         </h6>
@@ -33,7 +35,7 @@ export default function NavBar(props: {
   setPageId: (pageId: number) => void;
 }) {
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const [indicatorLeft, setIndicatorLeft] = useState(0);
+  const [indicatorPos, setIndicatorPos] = useState([0, 0]);
 
   useEffect(() => {
     const updateIndicatorPosition = () => {
@@ -43,8 +45,11 @@ export default function NavBar(props: {
         const containerRect = currentButton.closest('div')?.getBoundingClientRect();
         if (containerRect) {
           const relativeLeft = buttonRect.left - containerRect.left;
-          const centerPosition = relativeLeft + buttonRect.width / 2 - 28; // 20 is half of span width (w-10)
-          setIndicatorLeft(centerPosition);
+          const centerLeft = relativeLeft + buttonRect.width / 2 - 28; // span width * 2
+          
+          // const relativeTop = buttonRect.top - containerRect.top;
+          // const centerTop = relativeTop + buttonRect.height / 2 - 16; // span height * 2
+          setIndicatorPos([centerLeft, buttonRect.top - containerRect.top]);
         }
       }
     };
@@ -57,8 +62,8 @@ export default function NavBar(props: {
   return (
     <div className="fixed bottom-0 w-full h-max bg-ctp-crust py-2">
       <span
-        className="absolute top-1.25 w-14 h-8 bg-ctp-surface0 rounded-full transition-all duration-300"
-        style={{ left: `${indicatorLeft}px` }}
+        className="absolute z-0 w-14 h-8 bg-ctp-surface1 rounded-full transition-all duration-300"
+        style={{ left: `${indicatorPos[0]}px`, top: `${indicatorPos[1]}px` }}
       ></span>
 
       <ul className="flex flex-row gap-8 px-8 justify-center relative z-10">
