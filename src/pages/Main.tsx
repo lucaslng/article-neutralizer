@@ -94,28 +94,28 @@ export default function Main() {
 
       <div className="flex gap-2 mb-3.5">
         <button
-          className="border rounded-sm border-white p-1 hover:bg-white hover:text-black transition-colors"
+          className="border rounded-sm border-ctp-text p-1 hover:bg-ctp-text hover:text-ctp-crust transition-colors"
           onClick={handleExtract}
         >
           Extract
         </button>
 
         <button
-          className="border rounded-sm border-white p-1 hover:bg-white hover:text-black transition-colors"
+          className="border rounded-sm border-ctp-text p-1 hover:bg-ctp-text hover:text-ctp-crust transition-colors"
           onClick={handleNeutralize}
         >
           Neutralize
         </button>
 
         <button
-          className="border rounded-sm border-white p-1 hover:bg-white hover:text-black transition-colors"
+          className="border rounded-sm border-ctp-text p-1 hover:bg-ctp-text hover:text-ctp-crust transition-colors"
           onClick={handleFactCheck}
         >
           Fact Check
         </button>
       </div>
 
-      <div className="mt-4 bg-slate-800 p-4 rounded">
+      <div className="mt-4 p-4 rounded">
         <p className="whitespace-pre-wrap">{displayText}</p>
       </div>
     </div>

@@ -30,15 +30,15 @@ export default function Settings() {
         value={geminiKey}
         onChange={handleChange}
         placeholder="Enter your API key..."
-        className="border border-gray-300 rounded-lg px-3 py-2 w-full bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="border border-ctp-text rounded-lg px-3 py-2 w-full bg-ctp-base focus:outline-none focus:ring-2 focus:ring-ctp-lavender"
       />
-      <p className="text-sm text-gray-400 mt-2">
+      <p className="text-sm text-ctp-subtext0 mt-2">
         Get your API key from{" "}
         <a
           href="https://aistudio.google.com/app/apikey"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-400 hover:text-blue-300"
+          className="cursor-pointer text-ctp-blue"
         >
           Google AI Studio
         </a>

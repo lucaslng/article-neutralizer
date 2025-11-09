@@ -17,7 +17,7 @@ function NavBarItem(props: {
       <button
         ref={props.buttonRef}
         onClick={() => props.setPage(props.pageId)}
-        className="flex flex-col w-full items-center gap-0.5 py-1"
+        className="cursor-pointer flex flex-col w-full items-center gap-2"
       >
         {props.icon}
         <h6 className="w-full text-sm text-center transition-all duration-300">
@@ -43,7 +43,7 @@ export default function NavBar(props: {
         const containerRect = currentButton.closest('div')?.getBoundingClientRect();
         if (containerRect) {
           const relativeLeft = buttonRect.left - containerRect.left;
-          const centerPosition = relativeLeft + buttonRect.width / 2 - 20; // 20 is half of span width (w-10)
+          const centerPosition = relativeLeft + buttonRect.width / 2 - 28; // 20 is half of span width (w-10)
           setIndicatorLeft(centerPosition);
         }
       }
@@ -55,9 +55,9 @@ export default function NavBar(props: {
   }, [props.pageId]);
 
   return (
-    <div className="fixed bottom-0 w-full h-max bg-slate-900 py-3">
+    <div className="fixed bottom-0 w-full h-max bg-ctp-crust py-2">
       <span
-        className="absolute top-3.3 w-10 h-8 bg-slate-700 rounded-full transition-all duration-300"
+        className="absolute top-1.25 w-14 h-8 bg-ctp-surface0 rounded-full transition-all duration-300"
         style={{ left: `${indicatorLeft}px` }}
       ></span>
 
