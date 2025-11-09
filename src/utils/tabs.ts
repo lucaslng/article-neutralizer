@@ -1,4 +1,4 @@
-import type { Article } from '../utils/article';
+import type { Article } from './article';
 
 export const tabs = {
   getCurrentTab: async () => {

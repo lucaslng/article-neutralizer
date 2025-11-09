@@ -3,7 +3,6 @@ import { neutralizeText, factCheckText } from "../backend/gemini";
 import { tabs } from "../utils/tabs";
 import { storage } from "../utils/storage";
 import type { Article } from "../utils/article";
-
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 
 export default function Main() {
@@ -64,7 +63,7 @@ export default function Main() {
 
   async function handleSave() {
     if (!articleData) {
-      console.warn("No article data to save.");
+      setDisplayText("No article data to save.");
       return;
     }
 
@@ -77,7 +76,8 @@ export default function Main() {
       setDisplayText("Article saved successfully!");
     } catch (err) {
       console.error("Save failed:", err);
-      setDisplayText("Error saving article.");
+      const errorMsg = err instanceof Error ? err.message : "Error saving article.";
+      setDisplayText(errorMsg);
     }
   }
 

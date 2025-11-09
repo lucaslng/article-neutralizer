@@ -36,6 +36,10 @@ export default function Saved() {
 
   return (
     <div>
+      <div className="flex flex-row justify-between items-center mb-4">
+        <h1>Saved Articles</h1>
+      </div>
+
       {articles.length === 0 ? (
         <p className="mt-4 text-gray-400">No saved articles yet.</p>
       ) : selectedArticle ? (

@@ -13,9 +13,7 @@ export const storage = {
     const articles = await storage.getSavedArticles();
     
     const isDuplicate = articles.some(
-      (existing) => 
-        existing.url === article.url && 
-        existing.processedText === article.processedText
+      (existing) => existing.url === article.url
     );
     
     if (isDuplicate) {
