@@ -46,9 +46,6 @@ export default function NavBar(props: {
         if (containerRect) {
           const relativeLeft = buttonRect.left - containerRect.left;
           const centerLeft = relativeLeft + buttonRect.width / 2 - 28; // span width * 2
-          
-          // const relativeTop = buttonRect.top - containerRect.top;
-          // const centerTop = relativeTop + buttonRect.height / 2 - 16; // span height * 2
           setIndicatorPos([centerLeft, buttonRect.top - containerRect.top]);
         }
       }
