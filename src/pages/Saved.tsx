@@ -189,9 +189,9 @@ export default function Saved() {
                   e.stopPropagation();
                   handleDelete(index);
                 }}
-                className="cursor-pointer absolute bottom-2 right-2 hover:bg-ctp-surface1 p-1.5 rounded-full transition-colors"
+                className="cursor-pointer absolute bottom-2 right-2 hover:bg-ctp-surface1 p-1.5 rounded-full text-ctp-subtext0 transition-colors"
               >
-                <DeleteIcon fontSize="medium" className="text-ctp-subtext0" />
+                <DeleteIcon fontSize="medium"/>
               </button>
             </li>
           ))}
