@@ -9,6 +9,10 @@
 	font-family: 'Inter', sans-serif;
 }
 
+html, body {
+  @apply bg-ctp-mantle;
+}
+
 h1 {
 	@apply text-3xl;
 }
