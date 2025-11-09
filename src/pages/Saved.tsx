@@ -79,7 +79,7 @@ export default function Saved() {
               setSelectedIndex(null);
               setSelectedVersionIndex(0);
             }}
-            className="text-sm text-ctp-blue hover:text-ctp-blue-400 mb-4 cursor-pointer"
+            className="text-sm text-ctp-subtext1! hover:text-ctp-text! transition-colors duration-250 mb-4 cursor-pointer"
           >
             ← Back to list
           </button>
@@ -156,7 +156,7 @@ export default function Saved() {
               onClick={() =>
                 selectedIndex !== null && handleDelete(selectedIndex)
               }
-              className="cursor-pointer w-9/10 bg-ctp-red hover:bg-ctp-red-400 hover:text-ctp-mantle! text-ctp-crust! text-sm text-center py-3 rounded-full shadow-xs shadow-ctp-crust transition-colors duration:250"
+              className="cursor-pointer w-9/10 bg-ctp-red hover:bg-ctp-red-400 hover:text-ctp-mantle! text-ctp-crust! text-sm text-center py-3 rounded-full shadow-sm shadow-ctp-crust transition-colors duration:250"
             >
               Delete Article
             </button>
