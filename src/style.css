@@ -13,6 +13,10 @@ html, body {
   @apply bg-ctp-mantle;
 }
 
+input {
+	@apply border border-ctp-text rounded-lg px-3 py-2 w-full bg-ctp-base outline-none focus:ring-2 focus:ring-ctp-text transition-all duration-250;
+}
+
 h1 {
 	@apply text-3xl;
 }

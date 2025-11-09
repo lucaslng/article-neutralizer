@@ -30,7 +30,6 @@ export default function Settings() {
         value={geminiKey}
         onChange={handleChange}
         placeholder="Enter your API key..."
-        className="border border-ctp-text rounded-lg px-3 py-2 w-full bg-ctp-base focus:outline-none focus:ring-2 focus:ring-ctp-lavender"
       />
       <p className="text-sm text-ctp-subtext0 mt-2">
         Get your API key from{" "}
