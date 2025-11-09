@@ -1,0 +1,1 @@
+export type CallModel = (prompt: string, text: string) => Promise<string>;

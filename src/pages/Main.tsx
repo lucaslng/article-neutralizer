@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { neutralizeText, factCheckText } from "../backend/gemini";
+import { callGemini } from "../backend/gemini";
+import { neutralizeText, factCheckText } from "../backend/tools";
 import { tabs } from "../utils/tabs";
 import { storage } from "../utils/storage";
 import type { Article, ProcessingType } from "../utils/article";
@@ -77,7 +78,7 @@ export default function Main() {
     setDisplayText("Neutralizing text...");
 
     try {
-      const result = await neutralizeText(originalText);
+      const result = await neutralizeText(originalText, callGemini);
       setDisplayText(result || "Could not neutralize this text.");
       setCurrentProcessingType('neutralized');
       setCanSave(true);
@@ -103,7 +104,7 @@ export default function Main() {
     setDisplayText("Fact-checking text...");
 
     try {
-      const result = await factCheckText(originalText);
+      const result = await factCheckText(originalText, callGemini);
       setDisplayText(result || "Could not fact-check this text.");
       setCurrentProcessingType('factchecked');
       setCanSave(true);

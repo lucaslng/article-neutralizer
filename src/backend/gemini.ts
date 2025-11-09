@@ -1,5 +1,3 @@
-import { NEUTRALIZE_PROMPT, FACT_CHECK_PROMPT } from './prompts';
-
 const MODEL = "gemini-2.0-flash-exp";
 
 let cachedApiKey: string | null = null;
@@ -19,7 +17,7 @@ async function getApiKey(): Promise<string> {
   });
 }
 
-async function callGemini(prompt: string, text: string): Promise<string> {
+export async function callGemini(prompt: string, text: string): Promise<string> {
   const apiKey = await getApiKey();
   
   const response = await fetch(
@@ -51,14 +49,6 @@ async function callGemini(prompt: string, text: string): Promise<string> {
   }
 
   return result;
-}
-
-export async function neutralizeText(text: string): Promise<string> {
-  return callGemini(NEUTRALIZE_PROMPT, text);
-}
-
-export async function factCheckText(text: string): Promise<string> {
-  return callGemini(FACT_CHECK_PROMPT, text);
 }
 
 export function clearApiKeyCache() {
