@@ -60,7 +60,7 @@ export default function NavBar(props: {
   }, [props.pageId]);
 
   return (
-    <div className="fixed bottom-0 w-full h-max bg-ctp-crust py-2">
+    <div className="fixed bottom-0 w-full h-max bg-ctp-base py-2">
       <span
         className="absolute z-0 w-14 h-8 bg-ctp-surface1 rounded-full transition-all duration-300"
         style={{ left: `${indicatorPos[0]}px`, top: `${indicatorPos[1]}px` }}
