@@ -67,7 +67,9 @@ export default function Saved() {
   return (
     <div className="w-full">
       <div className="flex flex-row justify-between items-center mb-4">
-        <h1>Saved Articles</h1>
+        <h1 className="mr-3 text-5xl font-extrabold text-transparent bg-clip-text bg-[radial-gradient(circle_at_center,_#ffffff_0%,_#999_20%,_#222_60%,_#000_100%)]">
+          Saved Articles
+        </h1>
       </div>
 
       {articles.length === 0 ? (
