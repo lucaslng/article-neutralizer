@@ -1,4 +1,4 @@
-import { NEUTRALIZE_PROMPT } from './prompts';
+import { NEUTRALIZE_PROMPT, FACT_CHECK_PROMPT } from './prompts';
 
 const MODEL = "gemini-2.0-flash-exp";
 
@@ -55,6 +55,10 @@ async function callGemini(prompt: string, text: string): Promise<string> {
 
 export async function neutralizeText(text: string): Promise<string> {
   return callGemini(NEUTRALIZE_PROMPT, text);
+}
+
+export async function factCheckText(text: string): Promise<string> {
+  return callGemini(FACT_CHECK_PROMPT, text);
 }
 
 export function clearApiKeyCache() {
