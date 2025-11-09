@@ -232,7 +232,7 @@ export default function Main() {
 
   return (
     <div className="relative z-10 h-max">
-      <div className="absolute inset-0 top-110 flex items-center justify-center -z-10">
+      <div className="absolute inset-0 top-100 flex items-center justify-center -z-10">
         <Cubes
           gridSize={8}
           maxAngle={40}
@@ -250,13 +250,13 @@ export default function Main() {
           <h1 className="mr-3 text-5xl font-extrabold text-transparent bg-clip-text bg-[radial-gradient(circle_at_center,_#ffffff_0%,_#999_20%,_#222_60%,_#000_100%)]">
           Article Neutralizer
         </h1>
-          <div className="mr-3">
+          <div className="mr-2 cursor-pointer hover:bg-ctp-surface1 rounded-full p-1 self-end transition-colors">
             {isAlreadySaved ? (
-              <button className="cursor-pointer self-end mr-1 mb-1 hover:bg-ctp-surface1 rounded-full text-ctp-subtext0 transition-colors">
+              <button className="text-ctp-subtext0!">
                 <BookmarkAddedIcon fontSize="large" />
               </button>
             ) : (
-              <button className="cursor-pointer self-end mr-1 mb-1 hover:bg-ctp-surface1 rounded-full text-ctp-subtext0 transition-colors">
+              <button className="text-ctp-subtext0!">
                 <BookmarkIcon fontSize="large" onClick={handleSave} />
               </button>
             )}
