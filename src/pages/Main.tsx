@@ -10,16 +10,13 @@ export default function Main() {
   const [displayText, setDisplayText] = useState("Loading article...");
   const [articleData, setArticleData] = useState<Article | null>(null);
   const [isAlreadySaved, setIsAlreadySaved] = useState(false);
-<<<<<<< HEAD
   const [currentProcessingType, setCurrentProcessingType] = useState<ProcessingType>('original');
-=======
   const [originalText, setOriginalText] = useState<string>("");
   const [canSave, setCanSave] = useState(false);
   const [bannerMessage, setBannerMessage] = useState<{
     text: string;
     variant: "error" | "info" | "success";
   } | null>(null);
->>>>>>> 71398a32ec3b7b309db91080b404e88a60e8e227
 
   useEffect(() => {
     handleExtract();
@@ -54,13 +51,10 @@ export default function Main() {
       }
       
       setArticleData(article);
-<<<<<<< HEAD
       setCurrentProcessingType('original');
-=======
       setOriginalText(article.text);
       setCanSave(false);
       setBannerMessage(null);
->>>>>>> 71398a32ec3b7b309db91080b404e88a60e8e227
     } catch (error) {
       console.error("Extraction failed:", error);
       setDisplayText("Couldn't read from this page.");
@@ -78,12 +72,9 @@ export default function Main() {
     try {
       const result = await neutralizeText(originalText);
       setDisplayText(result || "Could not neutralize this text.");
-<<<<<<< HEAD
       setCurrentProcessingType('neutralized');
-=======
       setCanSave(Boolean(result));
       setBannerMessage(null);
->>>>>>> 71398a32ec3b7b309db91080b404e88a60e8e227
     } catch (err) {
       console.error("Neutralization failed:", err);
       setDisplayText("Error: " + (err as Error).message);
@@ -102,12 +93,9 @@ export default function Main() {
     try {
       const result = await factCheckText(originalText);
       setDisplayText(result || "Could not fact-check this text.");
-<<<<<<< HEAD
       setCurrentProcessingType('factchecked');
-=======
       setCanSave(false);
       showBanner("Neutralize the article before saving it.", "info");
->>>>>>> 71398a32ec3b7b309db91080b404e88a60e8e227
     } catch (err) {
       console.error("Fact-check failed:", err);
       setDisplayText("Error: " + (err as Error).message);
