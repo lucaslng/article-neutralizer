@@ -166,39 +166,32 @@ export default function Saved() {
           {articles.map((article, index) => (
             <li
               key={article.id || index}
-              className="bg-ctp-base p-4 rounded cursor-pointer hover:bg-ctp-surface0 transition-colors"
+              className="relative bg-ctp-base p-4 rounded cursor-pointer hover:bg-ctp-surface0 transition-colors"
               onClick={() => {
                 setSelectedIndex(index);
                 setSelectedVersionIndex(0);
               }}
             >
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <h2 className="text-xl font-bold">{article.title}</h2>
-                  <p className="text-sm text-ctp-subtext0 mt-1">
-                    {article.domain}
-                  </p>
-                  <p className="text-xs text-ctp-subtext0 mt-1">
-                    {formatDate(article.savedAt)}
-                  </p>
-                  {article.versions && article.versions.length > 0 && (
-                    <p className="text-xs text-ctp-subtext0 mt-1">
-                      {article.versions.length} version
-                      {article.versions.length > 1 ? "s" : ""}
-                    </p>
-                  )}
-                </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(index);
-                  }}
-                  className="cursor-pointer text-ctp-red hover:text-ctp-red-300 text-sm px-2 flex items-center gap-1"
-                >
-                  <DeleteIcon fontSize="small" />
-                  Delete
-                </button>
-              </div>
+              <h2 className="text-xl font-bold">{article.title}</h2>
+              <p className="text-sm text-ctp-subtext0 mt-1">{article.domain}</p>
+              <p className="text-xs text-ctp-subtext0 mt-1">
+                {formatDate(article.savedAt)}
+              </p>
+              {article.versions && article.versions.length > 0 && (
+                <p className="text-xs text-ctp-subtext0 mt-1">
+                  {article.versions.length} version
+                  {article.versions.length > 1 ? "s" : ""}
+                </p>
+              )}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(index);
+                }}
+                className="cursor-pointer absolute bottom-2 right-2 hover:bg-ctp-surface1 p-1.5 rounded-full transition-colors"
+              >
+                <DeleteIcon fontSize="medium" className="text-ctp-subtext0" />
+              </button>
             </li>
           ))}
         </ul>
