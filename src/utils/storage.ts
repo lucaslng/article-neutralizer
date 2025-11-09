@@ -11,6 +11,17 @@ export const storage = {
 
   saveArticle: async (article: SavedArticle): Promise<void> => {
     const articles = await storage.getSavedArticles();
+    
+    const isDuplicate = articles.some(
+      (existing) => 
+        existing.url === article.url && 
+        existing.processedText === article.processedText
+    );
+    
+    if (isDuplicate) {
+      throw new Error('This article has already been saved');
+    }
+    
     await chrome.storage.local.set({ 
       savedArticles: [...articles, article] 
     });
