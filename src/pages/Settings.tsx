@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { storage } from "../utils/storage";
 import { clearApiKeyCache as clearGeminiApiKeyCache } from "../backend/gemini";
+import KeyIcon from '@mui/icons-material/Key';
 
 export default function Settings() {
   const [geminiKey, setGeminiKey] = useState("");
@@ -24,7 +25,12 @@ export default function Settings() {
   return (
     <div>
       <h1>Settings</h1>
-      <h2 className="mt-4 mb-2 text-xl">Gemini API Key</h2>
+      <div className="flex flex-row">
+        <h2 className="mt-4 mb-2 text-xl">Gemini API Key</h2>
+        <div className="ml-2 mt-3.5">
+          <KeyIcon fontSize="large" />
+        </div>
+      </div>
       <input
         type="text"
         value={geminiKey}
