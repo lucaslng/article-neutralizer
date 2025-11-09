@@ -232,10 +232,10 @@ export default function Main() {
 
   return (
     <div className="relative z-10 h-max">
-      <div className="absolute inset-0 top-120 flex items-center justify-center -z-10">
+      <div className="absolute inset-0 top-110 flex items-center justify-center -z-10">
         <Cubes
           gridSize={8}
-          maxAngle={60}
+          maxAngle={40}
           radius={4}
           borderStyle="2px solid #a6adc8"
           faceColor="#181825"
