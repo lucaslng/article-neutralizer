@@ -31,13 +31,13 @@ export default function Settings() {
         onChange={handleChange}
         placeholder="Enter your API key..."
       />
-      <p className="text-sm text-ctp-subtext0 mt-2">
+      <p className="text-sm text-ctp-subtext0! mt-2">
         Get your API key from{" "}
         <a
           href="https://aistudio.google.com/app/apikey"
           target="_blank"
           rel="noopener noreferrer"
-          className="cursor-pointer text-ctp-blue"
+          className="cursor-pointer text-ctp-lavender!"
         >
           Google AI Studio
         </a>
