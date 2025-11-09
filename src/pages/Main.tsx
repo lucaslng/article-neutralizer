@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { callGemini } from "../backend/gemini";
+// import { callGemini } from "../backend/gemini";
 import { neutralizeText, factCheckText } from "../backend/tools";
 import { tabs } from "../utils/tabs";
 import { storage } from "../utils/storage";
 import type { Article, ProcessingType } from "../utils/article";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
+import { callDummy } from "../backend/dummy";
 
 export default function Main() {
   const [displayText, setDisplayText] = useState("Loading article...");
@@ -17,10 +18,29 @@ export default function Main() {
   const [bannerMessage, setBannerMessage] = useState<{
     text: string;
     variant: "error" | "info" | "success";
-  }>({text: "Hello", variant: "info"});
+  }>({text: "", variant: "info"});
 
   useEffect(() => {
-    handleExtract();
+    function handleTabChange() {
+      let queryOptions = { active: true, lastFocusedWindow: true };
+      chrome.tabs.query(queryOptions, ([]) => {
+        if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError);
+          return;
+        }
+        handleExtract();
+      });
+    }
+
+    handleTabChange();
+
+    chrome.tabs.onActivated.addListener(handleTabChange);
+    chrome.windows.onFocusChanged.addListener(handleTabChange);
+
+    return () => {
+      chrome.tabs.onActivated.removeListener(handleTabChange);
+      chrome.windows.onFocusChanged.removeListener(handleTabChange);
+    };
   }, []);
 
   function showBanner(text: string, variant: "error" | "info" | "success") {
@@ -78,7 +98,7 @@ export default function Main() {
     setDisplayText("Neutralizing text...");
 
     try {
-      const result = await neutralizeText(originalText, callGemini);
+      const result = await neutralizeText(originalText, callDummy);
       setDisplayText(result || "Could not neutralize this text.");
       setCurrentProcessingType('neutralized');
       setCanSave(true);
@@ -104,7 +124,7 @@ export default function Main() {
     setDisplayText("Fact-checking text...");
 
     try {
-      const result = await factCheckText(originalText, callGemini);
+      const result = await factCheckText(originalText, callDummy);
       setDisplayText(result || "Could not fact-check this text.");
       setCurrentProcessingType('factchecked');
       setCanSave(true);
