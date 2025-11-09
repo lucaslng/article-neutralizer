@@ -1,0 +1,40 @@
+import type { SavedArticle } from '../utils/article';
+
+export const storage = {
+  getSavedArticles: (): Promise<SavedArticle[]> => {
+    return new Promise((resolve) => {
+      chrome.storage.local.get(['savedArticles'], (result) => {
+        resolve(result.savedArticles || []);
+      });
+    });
+  },
+
+  saveArticle: async (article: SavedArticle): Promise<void> => {
+    const articles = await storage.getSavedArticles();
+    await chrome.storage.local.set({ 
+      savedArticles: [...articles, article] 
+    });
+  },
+
+  deleteArticle: async (index: number): Promise<void> => {
+    const articles = await storage.getSavedArticles();
+    articles.splice(index, 1);
+    await chrome.storage.local.set({ savedArticles: articles });
+  },
+
+  clearAllArticles: async (): Promise<void> => {
+    await chrome.storage.local.set({ savedArticles: [] });
+  },
+
+  getGeminiKey: (): Promise<string | null> => {
+    return new Promise((resolve) => {
+      chrome.storage.local.get('geminiKey', (result) => {
+        resolve(result.geminiKey || null);
+      });
+    });
+  },
+
+  setGeminiKey: async (key: string): Promise<void> => {
+    await chrome.storage.local.set({ geminiKey: key });
+  }
+};

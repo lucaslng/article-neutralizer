@@ -1,3 +1,6 @@
+/*
+OLD PROMPT
+*/
 // export const NEUTRALIZE_PROMPT =
 // `Goal: Produce an objective, concise summary of webpage text while removing bias or emotionally charged language.
 
