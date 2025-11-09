@@ -33,6 +33,7 @@ export default function Settings() {
       </div>
       <input
         type="text"
+        spellCheck="false"
         value={geminiKey}
         onChange={handleChange}
         placeholder="Enter your API key..."
