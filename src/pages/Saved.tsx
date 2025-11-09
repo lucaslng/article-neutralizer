@@ -110,7 +110,7 @@ export default function Saved() {
                     <button
                       key={index}
                       onClick={() => setSelectedVersionIndex(index)}
-                      className={`py-3 grow text-sm transition-colors duration-250 ${
+                      className={`cursor-pointer py-3 grow text-sm transition-colors duration-250 ${
                         selectedVersionIndex === index
                           ? "bg-ctp-surface1 hover:bg-ctp-surface2"
                           : "hover:bg-ctp-surface0"
