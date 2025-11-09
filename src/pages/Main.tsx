@@ -195,20 +195,26 @@ export default function Main() {
 
   return (
     <div>
-      <div className="flex flex-row mb-4">
-        <h1 className="mr-3">Article Neutralizer</h1>
-        {isAlreadySaved ? (
-          <BookmarkAddedIcon 
-            fontSize="large" 
-            className="text-blue-400 cursor-default"
-          />
-        ) : (
-          <BookmarkIcon 
-            fontSize="large" 
-            onClick={handleSave}
-            className="cursor-pointer hover:text-blue-400 transition-colors"
-          />
-        )}
+      <div className="flex flex-row mb-4 w-full justify-between items-center">
+        <h1 className="mr-3 text-5xl font-extrabold text-transparent bg-clip-text bg-[radial-gradient(circle_at_center,_#ffffff_0%,_#999_20%,_#222_60%,_#000_100%)]">
+          Article Neutralizer
+        </h1>
+        <div className="mr-3">
+          {isAlreadySaved ? (
+          <button className="cursor-pointer self-end mr-1 mb-1 hover:bg-ctp-surface1 rounded-full text-ctp-subtext0 transition-colors">
+            <BookmarkAddedIcon 
+            fontSize="large"
+            /> 
+          </button>
+          ) : (
+            <button className="cursor-pointer self-end mr-1 mb-1 hover:bg-ctp-surface1 rounded-full text-ctp-subtext0 transition-colors">
+              <BookmarkIcon 
+                fontSize="large" 
+                onClick={handleSave} 
+              /> 
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-row gap-6 w-full justify-center items-center mb-3.5">
