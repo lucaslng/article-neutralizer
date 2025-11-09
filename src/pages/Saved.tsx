@@ -50,17 +50,19 @@ export default function Saved() {
 
   function getProcessingTypeLabel(type: ProcessingType): string {
     const labels = {
-      'original': 'Original',
-      'neutralized': 'Neutralized',
-      'factchecked': 'Fact Checked'
+      original: "Original",
+      neutralized: "Neutralized",
+      factchecked: "Fact Checked",
     };
-    return labels[type] || 'Unknown';
+    return labels[type] || "Unknown";
   }
 
-  const selectedArticle = selectedIndex !== null ? articles[selectedIndex] : null;
-  const selectedVersion = selectedArticle && selectedArticle.versions.length > selectedVersionIndex 
-    ? selectedArticle.versions[selectedVersionIndex] 
-    : null;
+  const selectedArticle =
+    selectedIndex !== null ? articles[selectedIndex] : null;
+  const selectedVersion =
+    selectedArticle && selectedArticle.versions.length > selectedVersionIndex
+      ? selectedArticle.versions[selectedVersionIndex]
+      : null;
 
   return (
     <div className="w-full">
@@ -92,7 +94,9 @@ export default function Saved() {
             >
               {selectedArticle.url}
             </a>
-            <p className="text-sm text-ctp-subtext0 mt-2">{selectedArticle.domain}</p>
+            <p className="text-sm text-ctp-subtext0 mt-2">
+              {selectedArticle.domain}
+            </p>
             <p className="text-xs text-ctp-subtext0 mt-1">
               Saved: {formatDate(selectedArticle.savedAt)}
             </p>
@@ -101,15 +105,21 @@ export default function Saved() {
           {selectedArticle.versions && selectedArticle.versions.length > 0 ? (
             <>
               {selectedArticle.versions.length > 1 && (
-                <div className="flex gap-2 mb-4 flex-wrap">
+                <div className="flex flex-row mb-4 rounded-full divide divide-ctp-text bg-ctp-base border border-ctp-text">
                   {selectedArticle.versions.map((version, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedVersionIndex(index)}
-                      className={`px-3 py-1 rounded-lg text-sm transition-colors ${
+                      className={`py-3 grow text-sm transition-colors duration-250 ${
                         selectedVersionIndex === index
-                          ? 'bg-ctp-blue text-ctp-text'
-                          : 'bg-ctp-surface0 text-ctp-subtext1 hover:bg-ctp-surface1'
+                          ? "bg-ctp-surface1 hover:bg-ctp-surface2"
+                          : "hover:bg-ctp-surface0"
+                      } ${
+                        index === 0
+                          ? "rounded-l-full"
+                          : index === selectedArticle.versions.length - 1
+                          ? "rounded-r-full"
+                          : ""
                       }`}
                     >
                       {getProcessingTypeLabel(version.type)}
@@ -129,19 +139,23 @@ export default function Saved() {
                     </p>
                   </div>
                   <p className="whitespace-pre-wrap">
-                    {selectedVersion.content || 'No content available'}
+                    {selectedVersion.content || "No content available"}
                   </p>
                 </div>
               )}
             </>
           ) : (
             <div className="bg-ctp-base p-4 rounded-lg mb-4">
-              <p className="text-ctp-subtext0">No versions available for this article.</p>
+              <p className="text-ctp-subtext0">
+                No versions available for this article.
+              </p>
             </div>
           )}
 
           <button
-            onClick={() => selectedIndex !== null && handleDelete(selectedIndex)}
+            onClick={() =>
+              selectedIndex !== null && handleDelete(selectedIndex)
+            }
             className="w-full border border-ctp-red text-ctp-red px-4 py-2 rounded hover:bg-ctp-red hover:text-ctp-text transition-colors"
           >
             Delete Article
@@ -161,13 +175,16 @@ export default function Saved() {
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <h2 className="text-xl font-bold">{article.title}</h2>
-                  <p className="text-sm text-ctp-subtext0 mt-1">{article.domain}</p>
+                  <p className="text-sm text-ctp-subtext0 mt-1">
+                    {article.domain}
+                  </p>
                   <p className="text-xs text-ctp-subtext0 mt-1">
                     {formatDate(article.savedAt)}
                   </p>
                   {article.versions && article.versions.length > 0 && (
                     <p className="text-xs text-ctp-subtext0 mt-1">
-                      {article.versions.length} version{article.versions.length > 1 ? 's' : ''}
+                      {article.versions.length} version
+                      {article.versions.length > 1 ? "s" : ""}
                     </p>
                   )}
                 </div>
