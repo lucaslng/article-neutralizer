@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { storage } from "../utils/storage";
-import { clearApiKeyCache } from "../backend/gemini";
+import { clearApiKeyCache as clearGeminiApiKeyCache } from "../backend/gemini";
 
 export default function Settings() {
   const [geminiKey, setGeminiKey] = useState("");
@@ -18,7 +18,7 @@ export default function Settings() {
     const newValue = e.target.value;
     setGeminiKey(newValue);
     await storage.setGeminiKey(newValue);
-    clearApiKeyCache(); // Clear cached key in gemini.ts
+    clearGeminiApiKeyCache(); // Clear cached key in gemini.ts
   }
 
   return (
