@@ -90,14 +90,14 @@ export default function Saved() {
               href={selectedArticle.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-ctp-blue hover:text-ctp-blue-300 break-all"
+              className="text-sm text-ctp-lavender! hover:text-ctp-lavender-300! transition-colors duration-250 break-all"
             >
               {selectedArticle.url}
             </a>
-            <p className="text-sm text-ctp-subtext0 mt-2">
+            <p className="text-sm text-ctp-subtext1! mt-2">
               {selectedArticle.domain}
             </p>
-            <p className="text-xs text-ctp-subtext0 mt-1">
+            <p className="text-xs text-ctp-subtext1! mt-1">
               Saved: {formatDate(selectedArticle.savedAt)}
             </p>
           </div>
@@ -134,7 +134,7 @@ export default function Saved() {
                     <h3 className="text-lg font-semibold">
                       {getProcessingTypeLabel(selectedVersion.type)}
                     </h3>
-                    <p className="text-xs text-ctp-subtext0">
+                    <p className="text-xs text-ctp-subtext0!">
                       {formatDate(selectedVersion.processedAt)}
                     </p>
                   </div>
@@ -174,12 +174,12 @@ export default function Saved() {
               }}
             >
               <h2 className="text-xl font-bold">{article.title}</h2>
-              <p className="text-sm text-ctp-subtext0 mt-1">{article.domain}</p>
-              <p className="text-xs text-ctp-subtext0 mt-1">
+              <p className="text-sm text-ctp-subtext1! mt-1">{article.domain}</p>
+              <p className="text-xs text-ctp-subtext1! mt-1">
                 {formatDate(article.savedAt)}
               </p>
               {article.versions && article.versions.length > 0 && (
-                <p className="text-xs text-ctp-subtext0 mt-1">
+                <p className="text-xs text-ctp-subtext0! mt-1">
                   {article.versions.length} version
                   {article.versions.length > 1 ? "s" : ""}
                 </p>
@@ -189,7 +189,7 @@ export default function Saved() {
                   e.stopPropagation();
                   handleDelete(index);
                 }}
-                className="cursor-pointer absolute bottom-2 right-2 hover:bg-ctp-surface1 p-1.5 rounded-full text-ctp-subtext0 transition-colors"
+                className="cursor-pointer absolute bottom-2 right-2 hover:bg-ctp-surface1 p-1.5 rounded-full text-ctp-subtext1! transition-colors"
               >
                 <DeleteIcon fontSize="medium"/>
               </button>

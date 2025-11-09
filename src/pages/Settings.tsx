@@ -37,7 +37,7 @@ export default function Settings() {
           href="https://aistudio.google.com/app/apikey"
           target="_blank"
           rel="noopener noreferrer"
-          className="cursor-pointer text-ctp-lavender!"
+          className="cursor-pointer text-ctp-lavender! hover:text-ctp-lavender-300! transition-colors duration-250"
         >
           Google AI Studio
         </a>
