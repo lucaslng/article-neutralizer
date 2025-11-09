@@ -6,7 +6,7 @@ import { storage } from "../utils/storage";
 import type { Article, ProcessingType } from "../utils/article";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
-// import { callDummy } from "../backend/dummy";
+// // import { callDummy } from "../backend/dummy";
 import Cubes from "../components/Cubes";
 
 export default function Main() {
@@ -247,7 +247,9 @@ export default function Main() {
       </div>
       <div className="z-10">
         <div className="flex flex-row mb-4 w-full justify-between items-center">
-          <h1 className="mr-3">Article Neutralizer</h1>
+          <h1 className="mr-3 text-5xl font-extrabold text-transparent bg-clip-text bg-[radial-gradient(circle_at_center,_#ffffff_0%,_#999_20%,_#222_60%,_#000_100%)]">
+          Article Neutralizer
+        </h1>
           <div className="mr-3">
             {isAlreadySaved ? (
               <button className="cursor-pointer self-end mr-1 mb-1 hover:bg-ctp-surface1 rounded-full text-ctp-subtext0 transition-colors">

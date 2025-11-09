@@ -24,8 +24,10 @@ export default function Settings() {
 
   return (
     <div>
-      <h1>Settings</h1>
-      <div className="flex flex-row">
+      <h1 className="mr-3 text-5xl font-extrabold text-transparent bg-clip-text bg-[radial-gradient(circle_at_center,_#ffffff_0%,_#999_20%,_#222_60%,_#000_100%)]">
+        Settings
+      </h1>
+      <div className="flex flex-row mb-2">
         <h2 className="mt-4 mb-2 text-xl">Gemini API Key</h2>
         <div className="ml-2 mt-3.5">
           <KeyIcon fontSize="large" />
@@ -37,6 +39,7 @@ export default function Settings() {
         value={geminiKey}
         onChange={handleChange}
         placeholder="Enter your API key..."
+        className="mb-2"
       />
       <p className="text-sm text-ctp-subtext0! mt-2">
         Get your API key from{" "}
